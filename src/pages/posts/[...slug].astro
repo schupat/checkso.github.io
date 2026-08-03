@@ -1,13 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { render } from 'astro:content';
-import { allPosts, postUrl, fmtDate, freshness, related } from '../../lib/posts';
+import { allPosts, postUrl, fmtDate, freshness, related, slugify } from '../../lib/posts';
 import { SITE } from '../../lib/site';
 
 export async function getStaticPaths() {
   const posts = await allPosts();
-  // Die id ist der Dateiname mit originaler Gross-/Kleinschreibung.
-  // Dadurch bleiben die bestehenden Jekyll-URLs Zeichen fuer Zeichen erhalten.
+  // The id is the file name with its original casing, so the URLs Jekyll
+  // produced stay identical character for character.
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
@@ -17,51 +17,52 @@ const { Content } = await render(post);
 const posts = await allPosts();
 const f = freshness(post);
 const rel = related(post, posts);
-const cat = post.data.categories[0] ?? 'Notiz';
-// Erster Tag, der nicht schon die Kategorie wiederholt -- sonst stuende da "Microsoft / Microsoft".
-const leaf = post.data.tags.find((t) => t.toLowerCase() !== cat.toLowerCase()) ?? post.data.tags[0] ?? 'Artikel';
+const cat = post.data.categories[0] ?? 'Note';
+// First tag that does not just repeat the category, so the trail
+// does not read "Microsoft / Microsoft".
+const leaf = post.data.tags.find((t) => t.toLowerCase() !== cat.toLowerCase()) ?? post.data.tags[0] ?? 'Post';
 const meta = [
   post.data.author ?? SITE.author,
   fmtDate(post.data.date),
   post.data.tags.join(', '),
 ].filter(Boolean).join(' · ');
+
+const ageText = f.years >= 1
+  ? `This post is ${f.years === 1 ? 'a year' : f.years + ' years'} old.`
+  : `This post is ${f.months} months old.`;
 ---
 
 <Base title={post.data.title} description={post.data.description} type="article" date={post.data.date}>
-  <nav class="crumb" aria-label="Brotkrumen">
-    <a href="/">← Suche</a>
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="/">← Search</a>
     <span class="s">/</span>
-    <a href={`/categories/${cat.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`}>{cat}</a>
+    <a href={`/categories/${slugify(cat)}/`}>{cat}</a>
     <span class="s">/</span>
     <span>{leaf}</span>
   </nav>
 
   <article>
-    <p class="kicker">{post.data.categories.join(' · ') || 'Notiz'}</p>
+    <p class="kicker">{post.data.categories.join(' · ') || 'Note'}</p>
     <h1>{post.data.title}</h1>
     <p class="byline">{meta}</p>
 
     {post.data.verified && (
       <p class="verified">
-        <span><b>Verifiziert</b> {fmtDate(post.data.verified)}</span>
-        {post.data.testedAgainst && <span><b>Getestet gegen</b> {post.data.testedAgainst}</span>}
-        {post.data.effort && <span><b>Aufwand</b> {post.data.effort}</span>}
+        <span><b>Verified</b> {fmtDate(post.data.verified)}</span>
+        {post.data.testedAgainst && <span><b>Tested against</b> {post.data.testedAgainst}</span>}
+        {post.data.effort && <span><b>Takes</b> {post.data.effort}</span>}
       </p>
     )}
 
     {f.isStale && (
       <div class="decay">
-        <span class="tag">Altersvermerk</span>
-        <strong>
-          {f.years >= 1
-            ? `Dieser Artikel ist ${f.years === 1 ? 'ein Jahr' : f.years + ' Jahre'} alt.`
-            : `Dieser Artikel ist ${f.months} Monate alt.`}
-        </strong>{' '}
-        Oberflächen und Menüpfade können sich seitdem geändert haben. Frisch getestet?
+        <span class="tag">Age notice</span>
+        <strong>{ageText}</strong>{' '}
+        Portals and menu paths may have moved since then. Tested it recently?
         {' '}
-        <a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Noch aktuell: ' + post.data.title)}`}>
-          Kurz Bescheid geben
-        </a>, dann aktualisiere ich das Verifiziert-Datum.
+        <a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Still current: ' + post.data.title)}`}>
+          Drop me a line
+        </a>{' '}and I'll refresh the verified date.
       </div>
     )}
 
@@ -70,7 +71,7 @@ const meta = [
 
       {rel.length > 0 && (
         <div class="rel">
-          <h2 class="res-head">Führt oft weiter zu</h2>
+          <h2 class="res-head">Often read next</h2>
           {rel.map((p) => {
             const rf = freshness(p);
             return (

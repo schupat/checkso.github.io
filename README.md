@@ -1,74 +1,74 @@
 # schuele.xyz
 
-Blog von Patrick Schüle — Arbeitsnotizen zu Microsoft-Infrastruktur, Entra ID, Azure,
-Containern und Heimnetz. Gebaut mit [Astro](https://astro.build), gehostet auf GitHub Pages.
+Patrick Schüle's blog — field notes on Microsoft infrastructure, Entra ID, Azure,
+containers and the home lab. Built with [Astro](https://astro.build), hosted on GitHub Pages.
 
-## Lokal starten
+## Running it locally
 
 ```bash
 npm install
 npm run dev      # http://localhost:4321
-npm run build    # statisches Ergebnis in dist/
+npm run build    # static output in dist/
 ```
 
-Node 22 oder neuer. Kein Ruby, kein Bundler, keine Submodule.
+Node 22 or newer. No Ruby, no Bundler, no submodules.
 
-## Einen Artikel schreiben
+## Writing a post
 
-Neue Datei unter `src/content/posts/`. **Der Dateiname wird zur URL** —
-`Mein-Artikel.md` landet unter `/posts/Mein-Artikel/`. Kein Datum im Dateinamen.
+Add a file under `src/content/posts/`. **The file name becomes the URL** —
+`My-Post.md` is served at `/posts/My-Post/`. No date prefix in the file name.
 
 ```markdown
 ---
-title: "Titel des Artikels"
+title: "Title of the post"
 date: 2026-08-03
 categories: ["Microsoft", "Entra ID"]
 tags: ["Entra ID", "Conditional Access"]
 # Optional:
-# description: "Eigener Teaser statt des ersten Absatzes"
+# description: "Custom teaser instead of the first paragraph"
 # verified: 2026-08-03
-# testedAgainst: "Entra Admin Center + Graph PowerShell 2.3"
-# effort: "~20 Min"
+# testedAgainst: "Entra admin center + Graph PowerShell 2.3"
+# effort: "~20 min"
 # draft: true
 ---
 
 Text …
 ```
 
-`title` und `date` sind Pflicht. Fehlt eines, **bricht der Build ab** — der Artikel
-verschwindet nicht stillschweigend, wie es bei Jekyll passieren konnte.
+`title` and `date` are required. If either is missing **the build fails** — the post
+does not silently disappear the way it could under Jekyll.
 
-### Verifiziert-Siegel und Altersvermerk
+### Verified seal and age notice
 
-Ohne `verified` zeigt ein Artikel ab 12 Monaten automatisch einen Altersvermerk.
-Setzt du `verified` auf das Datum, an dem du die Anleitung zuletzt gegen die echte
-Oberfläche geprüft hast, erscheint stattdessen ein grünes Siegel — und in der
-Trefferliste steht „geprüft MM/JJ" statt „3 J. alt". Die Schwelle steht in
-`src/lib/site.ts` unter `staleAfterMonths`.
+Without `verified`, a post shows an age notice once it passes 12 months.
+Set `verified` to the date you last checked the walkthrough against the real
+product UI and a green seal appears instead — and the listing shows
+"verified MM/YY" rather than "3 yrs old". The threshold lives in
+`src/lib/site.ts` as `staleAfterMonths`.
 
-## Aufbau
+## Layout
 
 ```
-src/content/posts/    Artikel als Markdown
-src/content.config.ts Schema — validiert das Frontmatter beim Build
-src/lib/posts.ts      Sortierung, Frische, verwandte Artikel
-src/lib/site.ts       Titel, Navigation, Umami, Schwellenwerte
-src/pages/            Routen (Startseite, Artikel, Themen, Archiv, Feed, Suchindex)
-src/styles/global.css Design-System: zwei Themes über CSS-Variablen
-src/scripts/app.ts    Theme, Suche, Befehlspalette, Kopieren-Knopf
+src/content/posts/    posts as Markdown
+src/content.config.ts schema — validates frontmatter at build time
+src/lib/posts.ts      sorting, freshness, related posts
+src/lib/site.ts       title, navigation, analytics, thresholds
+src/pages/            routes (home, posts, topics, archive, feed, search index)
+src/styles/global.css design system: two themes via CSS variables
+src/scripts/app.ts    theme, search, command palette, copy buttons
 ```
 
-## Suche
+## Search
 
-`/search.json` wird zur Buildzeit erzeugt und beim ersten Tippen nachgeladen —
-kein Server, kein Fremddienst. Die Startseite listet ohne JavaScript alle Artikel;
-die Suche ist eine Verbesserung obendrauf, keine Voraussetzung.
+`/search.json` is generated at build time and fetched the first time you type —
+no server, no third-party service. The homepage lists every post without
+JavaScript; search is an enhancement, not a requirement.
 
-Tastatur: `⌘K` / `Strg+K` öffnet die Befehlspalette, `/` springt ins Suchfeld,
-`t` schaltet das Design um.
+Keyboard: `⌘K` / `Ctrl+K` opens the command palette, `/` focuses the search
+field, `t` switches the theme.
 
-## Deploy
+## Deploying
 
-Push auf `main` startet `.github/workflows/pages-deploy.yml`: `npm ci`,
-`astro check`, `astro build`, Upload nach GitHub Pages. Die Domain hängt an
-`public/CNAME`.
+Pushing to `main` runs `.github/workflows/pages-deploy.yml`: `npm ci`,
+`astro check`, `astro build`, then upload to GitHub Pages. The custom domain
+comes from `public/CNAME`.

@@ -10,12 +10,12 @@ for (const p of posts) {
 }
 const sorted = [...years.entries()].sort((a, b) => b[0] - a[0]);
 ---
-<Base title="Archiv" description="Alle Notizen nach Jahr.">
-  <h1 class="page-h">Archiv</h1>
-  <p class="page-sub">{posts.length} Notizen, neueste zuerst.</p>
+<Base title="Archive" description="Every post by year.">
+  <h1 class="page-h">Archive</h1>
+  <p class="page-sub">{posts.length} posts, newest first.</p>
   {sorted.map(([year, list]) => (
     <section>
-      <h2 class="year-h">{year} — {list.length} {list.length === 1 ? 'Notiz' : 'Notizen'}</h2>
+      <h2 class="year-h">{year} — {list.length} {list.length === 1 ? 'post' : 'posts'}</h2>
       <div class="hitlist">
         {list.map((p) => {
           const f = freshness(p);

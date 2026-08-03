@@ -17,9 +17,9 @@ export async function getStaticPaths() {
 }
 const { label, posts } = Astro.props;
 ---
-<Base title={`Thema: ${label}`} description={`Alle Notizen zum Thema ${label}.`}>
+<Base title={`Topic: ${label}`} description={`Every post tagged ${label}.`}>
   <h1 class="page-h">{label}</h1>
-  <p class="page-sub">{posts.length} {posts.length === 1 ? 'Notiz' : 'Notizen'} zu diesem Thema.</p>
+  <p class="page-sub">{posts.length} {posts.length === 1 ? 'post' : 'posts'} on this topic.</p>
   <div class="hitlist">
     {posts.map((p) => {
       const f = freshness(p);

@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { allPosts, postUrl, fmtDate, freshness } from '../lib/posts';
 
-/** Kompakter Suchindex, zur Buildzeit erzeugt. Kein Server, keine Fremd-API. */
+/** Compact search index, generated at build time. No server, no third-party API. */
 export const GET: APIRoute = async () => {
   const posts = await allPosts();
   const data = posts.map((p) => {
@@ -14,8 +14,8 @@ export const GET: APIRoute = async () => {
       date: fmtDate(p.data.date),
       age: f.label,
       fresh: f.isVerified,
-      // Rohtext gekuerzt — reicht fuer Volltextsuche ueber Fehlermeldungen,
-      // haelt den Index aber unter ein paar Kilobyte.
+      // Truncated body text — enough for full-text search over error messages,
+      // while keeping the index down to a few kilobytes.
       text: p.body?.replace(/[#*`>|_\-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 1200) ?? '',
     };
   });
