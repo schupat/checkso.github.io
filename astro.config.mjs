@@ -5,7 +5,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://schuele.xyz',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  integrations: [
+    // /desktop/ traegt noindex -- es gehoert dann auch nicht in die Sitemap,
+    // sonst widersprechen sich die beiden Signale.
+    sitemap({ filter: (page) => !page.includes('/desktop/') }),
+  ],
   build: { format: 'directory' },
 
   // Tag- und Kategorie-Namen wurden auf die offizielle Schreibweise gebracht.
