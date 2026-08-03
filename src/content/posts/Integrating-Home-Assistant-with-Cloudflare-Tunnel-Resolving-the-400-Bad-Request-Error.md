@@ -2,8 +2,8 @@
 title: "Integrating Home Assistant with Cloudflare Tunnel - Resolving the 400 Bad Request Error"
 date: 2023-05-30
 description: "When attempting to set up Cloudflare Tunnel with Home Assistant, you may encounter the \"400: Bad Request\" error message. This error typically occurs when the Cloudflare proxy fails to establ…"
-categories: ["Home Assistant", "CloudFlare", "Troubleshooting"]
-tags: ["cloudflare", "Home Assistant", "Smart Home", "Security"]
+categories: ["Home Assistant", "Cloudflare", "Troubleshooting"]
+tags: ["Cloudflare", "Home Assistant", "Smart Home", "Security"]
 # Optional — wenn gesetzt, zeigt der Artikel ein Verifiziert-Siegel:
 # verified: 2026-08-03
 # testedAgainst: "Entra Admin Center + Graph PowerShell 2.3"

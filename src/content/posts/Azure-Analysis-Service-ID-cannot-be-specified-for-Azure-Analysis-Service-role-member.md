@@ -2,8 +2,8 @@
 title: "Azure Analysis Service ID cannot be specified for Azure Analysis Service role member"
 date: 2021-09-01
 description: "After trying to configure Role Level Security as described in the following article:"
-categories: ["Azure Analysis Service", "PowerBi", "SSAS"]
-tags: ["analysis service"]
+categories: ["Azure Analysis Services", "Power BI", "SSAS"]
+tags: ["Analysis Services"]
 # Optional — wenn gesetzt, zeigt der Artikel ein Verifiziert-Siegel:
 # verified: 2026-08-03
 # testedAgainst: "Entra Admin Center + Graph PowerShell 2.3"
