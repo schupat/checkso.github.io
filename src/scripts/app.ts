@@ -1,6 +1,6 @@
 /* ============================================================
-   Clientseitiges Verhalten: Theme, Suche, Befehlspalette, Kopieren
-   Ohne JS bleibt die Seite vollstaendig lesbar und navigierbar.
+   Client behaviour: theme, search, command palette, copy buttons.
+   Without JS the site stays fully readable and navigable.
    ============================================================ */
 
 type Hit = {
@@ -30,14 +30,14 @@ function toggleTheme() {
   try {
     localStorage.setItem('theme', next);
   } catch {
-    /* Private Mode — dann gilt die Wahl eben nur fuer diese Seite */
+    /* Private mode — the choice then only applies to this page */
   }
   paintThemeBtn();
 }
 themeBtn?.addEventListener('click', toggleTheme);
 paintThemeBtn();
 
-/* ---------- Suchindex (einmal laden, dann im Speicher) ---------- */
+/* ---------- Search index (fetched once, then kept in memory) ---------- */
 let INDEX: Hit[] | null = null;
 let indexPromise: Promise<Hit[]> | null = null;
 
@@ -68,7 +68,7 @@ function hl(text: string, q: string) {
   return esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
 }
 
-/** Tokenweise UND-Suche: "entra jamf" findet nur Treffer mit beidem. */
+/** Token-wise AND search: "entra jamf" only matches posts containing both. */
 function search(list: Hit[], q: string) {
   const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return list;
@@ -87,7 +87,7 @@ function hitHTML(h: Hit, q: string) {
   );
 }
 
-/* ---------- Suche auf der Startseite ---------- */
+/* ---------- Homepage search ---------- */
 const q = document.getElementById('q') as HTMLInputElement | null;
 const results = document.getElementById('results');
 const resHead = document.getElementById('res-head');
@@ -104,13 +104,13 @@ if (q && results && resHead) {
       return;
     }
     loadIndex().then((list) => {
-      if (q.value.trim() !== v) return; // Nutzer hat weitergetippt
+      if (q.value.trim() !== v) return; // user kept typing
       const found = search(list, v);
-      resHead.textContent = `${found.length} ${found.length === 1 ? 'Treffer' : 'Treffer'} für „${v}“`;
+      resHead.textContent = `${found.length} ${found.length === 1 ? 'result' : 'results'} for \u201c${v}\u201d`;
       results.innerHTML = found.length
         ? found.map((h) => hitHTML(h, v)).join('')
-        : `<div class="empty">Nichts gefunden für <b>${esc(v)}</b>.<br>` +
-          `Schreib mir — wenn ich das Problem auch hatte, wird ein Artikel daraus.</div>`;
+        : `<div class="empty">Nothing found for <b>${esc(v)}</b>.<br>` +
+          `Drop me a line — if I have hit the same problem, it may turn into a post.</div>`;
     });
   };
 
@@ -126,7 +126,7 @@ if (q && results && resHead) {
   });
 }
 
-/* ---------- Befehlspalette ---------- */
+/* ---------- Command palette ---------- */
 const scrim = document.getElementById('scrim');
 const pal = document.getElementById('palette');
 const pq = document.getElementById('pq') as HTMLInputElement | null;
@@ -134,13 +134,13 @@ const plist = document.getElementById('plist');
 
 type Cmd = { ic: string; t: string; sub: string; run: () => void };
 const CMDS: Cmd[] = [
-  { ic: '→', t: 'Zur Startseite', sub: 'g h', run: () => (location.href = '/') },
-  { ic: '#', t: 'Alle Themen', sub: 'g t', run: () => (location.href = '/tags/') },
-  { ic: '◷', t: 'Archiv nach Jahr', sub: 'g a', run: () => (location.href = '/archives/') },
-  { ic: '☺', t: 'Über mich', sub: '', run: () => (location.href = '/about/') },
-  { ic: '◐', t: 'Design umschalten', sub: 't', run: toggleTheme },
-  { ic: '⌁', t: 'RSS-Feed öffnen', sub: '', run: () => (location.href = '/feed.xml') },
-  { ic: '✉', t: 'Korrektur melden', sub: '', run: () => (location.href = 'mailto:website@schuele.xyz?subject=Korrektur') },
+  { ic: '→', t: 'Go to home', sub: 'g h', run: () => (location.href = '/') },
+  { ic: '#', t: 'All topics', sub: 'g t', run: () => (location.href = '/tags/') },
+  { ic: '◷', t: 'Archive by year', sub: 'g a', run: () => (location.href = '/archives/') },
+  { ic: '☺', t: 'About me', sub: '', run: () => (location.href = '/about/') },
+  { ic: '◐', t: 'Switch theme', sub: 't', run: toggleTheme },
+  { ic: '⌁', t: 'Open RSS feed', sub: '', run: () => (location.href = '/feed.xml') },
+  { ic: '✉', t: 'Report a correction', sub: '', run: () => (location.href = 'mailto:website@schuele.xyz?subject=Correction') },
 ];
 
 let sel = 0;
@@ -153,15 +153,15 @@ function pRender() {
   let html = '';
 
   const posts = INDEX ? search(INDEX, v) : [];
-  // Befehle: alle Begriffe muessen im Befehlsnamen vorkommen
+  // Commands: every term must appear in the command label
   const terms = v.toLowerCase().split(/\s+/).filter(Boolean);
   const cmds = CMDS.filter((c) => terms.every((t) => c.t.toLowerCase().includes(t)));
 
-  // Bei leerer Eingabe zuerst die Befehle — sonst zuerst die Artikel.
+  // Empty query lists commands first; otherwise posts come first.
   const blocks: Array<[string, string]> = [];
 
   if (posts.length) {
-    let s = '<div class="pgroup">Artikel</div>';
+    let s = '<div class="pgroup">Posts</div>';
     for (const p of posts.slice(0, 8)) {
       flat.push({ run: () => (location.href = p.url) });
       s +=
@@ -171,7 +171,7 @@ function pRender() {
     blocks.push([v ? 'a' : 'b', s]);
   }
   if (cmds.length) {
-    let s = '<div class="pgroup">Befehle</div>';
+    let s = '<div class="pgroup">Commands</div>';
     for (const c of cmds) {
       flat.push({ run: c.run });
       s +=
@@ -182,7 +182,7 @@ function pRender() {
   }
 
   html = blocks.sort((x, y) => x[0].localeCompare(y[0])).map((b) => b[1]).join('');
-  if (!flat.length) html = '<div class="empty" style="padding:1.3rem 1.15rem">Kein Treffer.</div>';
+  if (!flat.length) html = '<div class="empty" style="padding:1.3rem 1.15rem">No matches.</div>';
 
   plist.innerHTML = html;
   if (sel >= flat.length) sel = 0;
@@ -266,7 +266,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ---------- Kopieren-Knopf an jedem Codeblock ---------- */
+/* ---------- Copy button on every code block ---------- */
 document.querySelectorAll<HTMLPreElement>('.body pre').forEach((pre) => {
   const wrap = document.createElement('div');
   wrap.className = 'codewrap';
@@ -276,17 +276,17 @@ document.querySelectorAll<HTMLPreElement>('.body pre').forEach((pre) => {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'copy-btn';
-  btn.textContent = 'Kopieren';
+  btn.textContent = 'Copy';
   btn.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(pre.innerText);
     } catch {
-      /* Clipboard verweigert — Rueckmeldung trotzdem zeigen */
+      /* Clipboard denied — still give feedback */
     }
-    btn.textContent = 'Kopiert';
+    btn.textContent = 'Copied';
     btn.classList.add('ok');
     setTimeout(() => {
-      btn.textContent = 'Kopieren';
+      btn.textContent = 'Copy';
       btn.classList.remove('ok');
     }, 1400);
   });

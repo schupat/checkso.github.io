@@ -38,8 +38,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Faellt hier durch, wenn ein Post kaputtes oder fehlendes Frontmatter hat --
-      # der Build bricht ab, statt den Artikel stillschweigend wegzulassen.
+      # Fails here if a post has broken or missing frontmatter --
+      # the build stops instead of silently dropping the article.
       - name: Type & content check
         run: npx astro check --minimumSeverity error
 

@@ -1,13 +1,13 @@
 ---
-import { SITE, NAV } from '../lib/site';
+import { NAV } from '../lib/site';
 const here = Astro.url.pathname;
 ---
 <header class="site">
   <a class="brand" href="/">schuele<span>.xyz</span></a>
-  <nav class="site" aria-label="Hauptnavigation">
+  <nav class="site" aria-label="Main navigation">
     {NAV.map((n) => (
       <a href={n.href} aria-current={here === n.href ? 'page' : undefined}>{n.label}</a>
     ))}
-    <button class="theme-btn" id="theme-btn" type="button" aria-label="Design umschalten">Terminal</button>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch theme">Terminal</button>
   </nav>
 </header>

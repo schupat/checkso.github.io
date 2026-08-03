@@ -3,23 +3,23 @@ import { SITE } from './site';
 
 export type Post = CollectionEntry<'posts'>;
 
-/** Alle veröffentlichten Posts, neueste zuerst. */
+/** Every published post, newest first. */
 export async function allPosts(): Promise<Post[]> {
-  const posts = await getCollection('posts', ({ data }) => import.meta.env.PROD ? !data.draft : true);
+  const posts = await getCollection('posts', ({ data }) => (import.meta.env.PROD ? !data.draft : true));
   return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
 export const postUrl = (p: Post) => `/posts/${p.id}/`;
 
 export const fmtDate = (d: Date) =>
-  d.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
+  d.toLocaleDateString(SITE.locale, { month: 'short', day: 'numeric', year: 'numeric' });
 
 const monthsBetween = (a: Date, b: Date) =>
   (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
 
 /**
- * Frischezustand eines Artikels. Zählt ab `verified`, sonst ab `date`.
- * Genau das, was einem IT-Leser fehlt, wenn er auf einen drei Jahre alten Treffer klickt.
+ * How current a post is. Counts from `verified` when set, otherwise from `date`.
+ * This is the thing readers miss when they land on a three-year-old how-to.
  */
 export function freshness(p: Post, now = new Date()) {
   const base = p.data.verified ?? p.data.date;
@@ -29,19 +29,20 @@ export function freshness(p: Post, now = new Date()) {
 
   let label: string;
   if (isVerified) {
-    label = `geprüft ${String(base.getMonth() + 1).padStart(2, '0')}/${String(base.getFullYear()).slice(2)}`;
+    const mm = String(base.getMonth() + 1).padStart(2, '0');
+    label = `verified ${mm}/${String(base.getFullYear()).slice(2)}`;
   } else if (years >= 1) {
-    label = years === 1 ? '1 J. alt' : `${years} J. alt`;
+    label = years === 1 ? '1 yr old' : `${years} yrs old`;
   } else if (months >= 1) {
-    label = `${months} Mon. alt`;
+    label = `${months} mo old`;
   } else {
-    label = 'neu';
+    label = 'new';
   }
 
   return { months, years, isVerified, isStale: months >= SITE.staleAfterMonths, label };
 }
 
-/** Verwandte Artikel über gemeinsame Tags, sonst über die Kategorie. */
+/** Related posts via shared tags, falling back to the category. */
 export function related(current: Post, pool: Post[], limit = 3): Post[] {
   const tags = new Set(current.data.tags.map((t) => t.toLowerCase()));
   const cats = new Set(current.data.categories.map((c) => c.toLowerCase()));
@@ -58,7 +59,7 @@ export function related(current: Post, pool: Post[], limit = 3): Post[] {
     .map((x) => x.p);
 }
 
-/** Tag-Häufigkeiten, absteigend. */
+/** Tag frequencies, most used first. */
 export function tagCounts(posts: Post[]) {
   const map = new Map<string, number>();
   for (const p of posts) for (const t of p.data.tags) map.set(t, (map.get(t) ?? 0) + 1);

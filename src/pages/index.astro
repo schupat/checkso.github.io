@@ -11,13 +11,13 @@ const top = tagCounts(posts).slice(0, 6);
   <div class="home">
     <p class="id-line">
       <span class="dot"></span>
-      <span><b>{SITE.author}</b> — Microsoft-Infrastruktur &amp; Identity, München</span>
+      <span><b>{SITE.author}</b> — Microsoft infrastructure &amp; identity, Munich</span>
     </p>
 
-    <h1 class="home-h">Was suchst du?</h1>
+    <h1 class="home-h">What are you looking for?</h1>
     <p class="home-sub">
-      {posts.length} Arbeitsnotizen zu Entra ID, Azure, Containern und Heimnetz.
-      Die meisten kommen über eine Fehlermeldung hierher — also fangen wir gleich damit an.
+      {posts.length} field notes on Entra ID, Azure, containers and the home lab.
+      Most people land here from a search engine with an error message — so let's start there.
     </p>
 
     <div class="searchbox">
@@ -26,8 +26,8 @@ const top = tagCounts(posts).slice(0, 6);
           <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path>
         </svg>
       </span>
-      <input id="q" type="search" placeholder="Fehlermeldung, Produkt oder Stichwort…"
-             autocomplete="off" spellcheck="false" aria-label="Artikel durchsuchen" />
+      <input id="q" type="search" placeholder="Error message, product or keyword…"
+             autocomplete="off" spellcheck="false" aria-label="Search posts" />
       <span class="kbd" aria-hidden="true">⌘K</span>
     </div>
 
@@ -37,7 +37,7 @@ const top = tagCounts(posts).slice(0, 6);
       ))}
     </div>
 
-    <h2 class="res-head" id="res-head">Zuletzt geschrieben</h2>
+    <h2 class="res-head" id="res-head">Latest posts</h2>
     <div class="hitlist" id="results">
       {posts.map((p) => {
         const f = freshness(p);

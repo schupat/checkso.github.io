@@ -3,7 +3,7 @@ title: "Using OnlyOffice on mobile devices with traefik"
 date: 2022-03-20
 description: "Since Ascensio decided to remove the support for mobile editing of documents using the Nextcloud app or browser, the community created a fork of OnlyOffice which brings this feature back."
 categories: ["Nextcloud", "OnlyOffice"]
-tags: ["nextcloud", "onlyoffice", "docker", "traefik"]
+tags: ["Nextcloud", "OnlyOffice", "Docker", "Traefik"]
 # Optional — wenn gesetzt, zeigt der Artikel ein Verifiziert-Siegel:
 # verified: 2026-08-03
 # testedAgainst: "Entra Admin Center + Graph PowerShell 2.3"

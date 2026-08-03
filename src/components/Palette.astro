@@ -1,10 +1,10 @@
 ---
-// Befehlspalette — der Suchindex wird zur Buildzeit als /search.json erzeugt
-// und erst beim ersten Oeffnen nachgeladen.
+// Command palette. The search index is generated at build time as /search.json
+// and only fetched the first time the palette or the search field is used.
 ---
 <div class="scrim" id="scrim"></div>
-<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Suche und Befehle">
-  <input id="pq" type="text" placeholder="Suchen oder Befehl eingeben…" autocomplete="off" spellcheck="false" aria-label="Suchen oder Befehl eingeben" />
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search and commands">
+  <input id="pq" type="text" placeholder="Search or type a command…" autocomplete="off" spellcheck="false" aria-label="Search or type a command" />
   <div class="plist" id="plist" role="listbox"></div>
-  <div class="pfoot"><span>↑↓ Navigieren</span><span>⏎ Öffnen</span><span>Esc Schließen</span></div>
+  <div class="pfoot"><span>↑↓ Navigate</span><span>⏎ Open</span><span>Esc Close</span></div>
 </div>

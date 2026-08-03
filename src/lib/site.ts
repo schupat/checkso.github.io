@@ -2,13 +2,16 @@ export const SITE = {
   title: 'Patricks Blog',
   tagline: 'Small blog about everything related to Microsoft products and IT.',
   description:
-    'Arbeitsnotizen zu Microsoft-Infrastruktur, Entra ID, Azure, Containern und Heimnetz — von Patrick Schüle aus München.',
+    'Field notes on Microsoft infrastructure, Entra ID, Azure, containers and the home lab — by Patrick Schüle, Munich.',
   url: 'https://schuele.xyz',
   author: 'Patrick Schüle',
   email: 'website@schuele.xyz',
-  github: 'https://github.com/checkso',
+  github: 'https://github.com/schupat',
+  githubLabel: 'github.com/schupat',
   lang: 'en',
-  /** Ab wie vielen Monaten ohne Verifizierung der Altersvermerk erscheint. */
+  /** Locale used for every date shown on the site. */
+  locale: 'en-US',
+  /** After how many unverified months a post shows the age notice. */
   staleAfterMonths: 12,
   umami: {
     id: 'a976d73e-4e79-4bdd-a8ab-6841bce63168',
@@ -17,9 +20,9 @@ export const SITE = {
 };
 
 export const NAV = [
-  { href: '/', label: 'Notizen' },
-  { href: '/tags/', label: 'Themen' },
-  { href: '/archives/', label: 'Archiv' },
-  { href: '/about/', label: 'Über' },
+  { href: '/', label: 'Notes' },
+  { href: '/tags/', label: 'Topics' },
+  { href: '/archives/', label: 'Archive' },
+  { href: '/about/', label: 'About' },
   { href: '/feed.xml', label: 'RSS' },
 ];

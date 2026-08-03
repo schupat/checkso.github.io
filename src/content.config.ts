@@ -2,15 +2,15 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const posts = defineCollection({
-  // Nur .md wird geladen -- eine Datei ohne Endung faellt hier auf,
-  // statt wie bei Jekyll stillschweigend zu verschwinden.
+  // Only .md is loaded -- a file without an extension fails loudly here
+  // instead of silently vanishing the way it could under Jekyll.
   loader: glob({
     pattern: '**/*.md',
     base: './src/content/posts',
-    // URL-Kompatibilitaet zu Jekyll: Gross-/Kleinschreibung bleibt erhalten
-    // (Astro wuerde kleinschreiben, GitHub Pages unterscheidet aber),
-    // und Laeufe von Sonderzeichen werden zu einem Bindestrich zusammengezogen
-    // -- genau das macht Jekylls :title. Aus "530003---Entras" wird "530003-Entras".
+    // URL compatibility with Jekyll: casing is preserved (Astro would lowercase,
+    // but GitHub Pages is case-sensitive), and runs of non-alphanumerics collapse
+    // into a single hyphen -- exactly what Jekyll's :title does.
+    // "530003---Entras" becomes "530003-Entras".
     generateId: ({ entry }) =>
       entry
         .replace(/\.md$/, '')
@@ -24,11 +24,11 @@ const posts = defineCollection({
     categories: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     description: z.string().optional(),
-    /** Wann der Inhalt zuletzt gegen die echte Oberflaeche geprueft wurde. */
+    /** When the content was last checked against the real product UI. */
     verified: z.coerce.date().optional(),
-    /** Wogegen geprueft wurde, z.B. "Entra Admin Center + Graph PowerShell 2.3" */
+    /** What it was checked against, e.g. "Entra admin center + Graph PowerShell 2.3" */
     testedAgainst: z.string().optional(),
-    /** Grober Zeitaufwand, z.B. "~20 Min" */
+    /** Rough time required, e.g. "~20 min" */
     effort: z.string().optional(),
     draft: z.boolean().default(false),
   }),

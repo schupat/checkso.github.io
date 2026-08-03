@@ -4,9 +4,9 @@ import { allPosts, categoryCounts, slugify } from '../../lib/posts';
 const posts = await allPosts();
 const cats = categoryCounts(posts);
 ---
-<Base title="Kategorien" description="Alle Kategorien dieses Blogs.">
-  <h1 class="page-h">Kategorien</h1>
-  <p class="page-sub">Grobe Einteilung. Für feinere Suche taugen die <a href="/tags/">Themen</a> besser.</p>
+<Base title="Categories" description="Every category on this blog.">
+  <h1 class="page-h">Categories</h1>
+  <p class="page-sub">The coarse split. For something more specific, <a href="/tags/">topics</a> work better.</p>
   <div class="taglist">
     {cats.map(([c, n]) => (
       <a class="chip" href={`/categories/${slugify(c)}/`}>{c} <b>{n}</b></a>
