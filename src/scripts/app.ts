@@ -140,6 +140,7 @@ const CMDS: Cmd[] = [
   { ic: '☺', t: 'About me', sub: '', run: () => (location.href = '/about/') },
   { ic: '◐', t: 'Switch theme', sub: 't', run: toggleTheme },
   { ic: '⌁', t: 'Open RSS feed', sub: '', run: () => (location.href = '/feed.xml') },
+  { ic: '▮', t: 'Desktop mode', sub: '', run: () => (location.href = '/desktop/') },
   { ic: '✉', t: 'Report a correction', sub: '', run: () => (location.href = 'mailto:website@schuele.xyz?subject=Correction') },
 ];
 
@@ -292,3 +293,5 @@ document.querySelectorAll<HTMLPreElement>('.body pre').forEach((pre) => {
   });
   wrap.appendChild(btn);
 });
+
+export {};
