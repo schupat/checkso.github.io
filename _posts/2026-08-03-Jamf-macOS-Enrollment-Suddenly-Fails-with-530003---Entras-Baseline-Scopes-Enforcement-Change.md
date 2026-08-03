@@ -82,11 +82,7 @@ Baseline scope sign-ins are then evaluated against the placeholder application. 
 
 Microsoft lists our exact scenario as a valid use case: *All resources policies with compliant device requirements where certain apps must work on unmanaged devices*. They also recommend aligning with the new enforcement model and using this option only where the legacy behaviour is genuinely required.
 
-## Three Things That Do Not Help
-
-**Adding a second, more permissive policy.** Conditional Access has no priority order. Every matching policy is evaluated and the grant controls are combined. A new policy requiring MFA does not override an existing policy requiring a compliant device — it stacks on top of it.
-
-**A device filter on `isManaged`.** That attribute does not exist. Supported ones include `deviceId`, `displayName`, `deviceOwnership`, `enrollmentProfileName`, `isCompliant`, `manufacturer`, `mdmAppId`, `model`, `operatingSystem`, `operatingSystemVersion`, `physicalIds`, `profileType`, `systemLabels`, `trustType` and `extensionAttribute1-15`. And for unregistered devices all device properties are `null`, so filters using positive operators do not apply to them at all. Targeting unregistered devices requires negative operators.
+## Thing That Doees Not Help
 
 **Excluding Microsoft Graph.** It works, and it opens a door far wider than the one you were trying to walk through.
 
