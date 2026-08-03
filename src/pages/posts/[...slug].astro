@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import { render } from 'astro:content';
+import { allPosts, postUrl, fmtDate, freshness, related } from '../../lib/posts';
+import { SITE } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  // Die id ist der Dateiname mit originaler Gross-/Kleinschreibung.
+  // Dadurch bleiben die bestehenden Jekyll-URLs Zeichen fuer Zeichen erhalten.
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const posts = await allPosts();
+const f = freshness(post);
+const rel = related(post, posts);
+const cat = post.data.categories[0] ?? 'Notiz';
+// Erster Tag, der nicht schon die Kategorie wiederholt -- sonst stuende da "Microsoft / Microsoft".
+const leaf = post.data.tags.find((t) => t.toLowerCase() !== cat.toLowerCase()) ?? post.data.tags[0] ?? 'Artikel';
+const meta = [
+  post.data.author ?? SITE.author,
+  fmtDate(post.data.date),
+  post.data.tags.join(', '),
+].filter(Boolean).join(' · ');
+---
+
+<Base title={post.data.title} description={post.data.description} type="article" date={post.data.date}>
+  <nav class="crumb" aria-label="Brotkrumen">
+    <a href="/">← Suche</a>
+    <span class="s">/</span>
+    <a href={`/categories/${cat.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`}>{cat}</a>
+    <span class="s">/</span>
+    <span>{leaf}</span>
+  </nav>
+
+  <article>
+    <p class="kicker">{post.data.categories.join(' · ') || 'Notiz'}</p>
+    <h1>{post.data.title}</h1>
+    <p class="byline">{meta}</p>
+
+    {post.data.verified && (
+      <p class="verified">
+        <span><b>Verifiziert</b> {fmtDate(post.data.verified)}</span>
+        {post.data.testedAgainst && <span><b>Getestet gegen</b> {post.data.testedAgainst}</span>}
+        {post.data.effort && <span><b>Aufwand</b> {post.data.effort}</span>}
+      </p>
+    )}
+
+    {f.isStale && (
+      <div class="decay">
+        <span class="tag">Altersvermerk</span>
+        <strong>
+          {f.years >= 1
+            ? `Dieser Artikel ist ${f.years === 1 ? 'ein Jahr' : f.years + ' Jahre'} alt.`
+            : `Dieser Artikel ist ${f.months} Monate alt.`}
+        </strong>{' '}
+        Oberflächen und Menüpfade können sich seitdem geändert haben. Frisch getestet?
+        {' '}
+        <a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Noch aktuell: ' + post.data.title)}`}>
+          Kurz Bescheid geben
+        </a>, dann aktualisiere ich das Verifiziert-Datum.
+      </div>
+    )}
+
+    <div class="body">
+      <Content />
+
+      {rel.length > 0 && (
+        <div class="rel">
+          <h2 class="res-head">Führt oft weiter zu</h2>
+          {rel.map((p) => {
+            const rf = freshness(p);
+            return (
+              <a class="hit" href={postUrl(p)}>
+                <div class="t">{p.data.title}</div>
+                <div class="m">
+                  <span>{p.data.tags.slice(0, 3).join(' · ')}</span>
+                  <span class={rf.isVerified ? 'age ok' : 'age'}>{rf.label}</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,9 @@
+---
+import { SITE } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="site">
+  <span>{SITE.author} · München</span>
+  <span><a href={SITE.github}>GitHub</a> · <a href={`mailto:${SITE.email}`}>Mail</a> · <a href="/feed.xml">RSS</a></span>
+  <span>© {year} · CC BY 4.0</span>
+</footer>

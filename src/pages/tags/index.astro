@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import { allPosts, tagCounts, slugify } from '../../lib/posts';
+const posts = await allPosts();
+const tags = tagCounts(posts);
+---
+<Base title="Themen" description="Alle Themen dieses Blogs, nach Häufigkeit sortiert.">
+  <h1 class="page-h">Themen</h1>
+  <p class="page-sub">{tags.length} Themen über {posts.length} Notizen. Die häufigsten zuerst.</p>
+  <div class="taglist">
+    {tags.map(([t, n]) => (
+      <a class="chip" href={`/tags/${slugify(t)}/`}>{t} <b>{n}</b></a>
+    ))}
+  </div>
+</Base>

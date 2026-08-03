@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import { allPosts, postUrl, fmtDate, freshness, tagCounts } from '../lib/posts';
+import { SITE } from '../lib/site';
+
+const posts = await allPosts();
+const top = tagCounts(posts).slice(0, 6);
+---
+
+<Base title={SITE.title} description={SITE.description}>
+  <div class="home">
+    <p class="id-line">
+      <span class="dot"></span>
+      <span><b>{SITE.author}</b> — Microsoft-Infrastruktur &amp; Identity, München</span>
+    </p>
+
+    <h1 class="home-h">Was suchst du?</h1>
+    <p class="home-sub">
+      {posts.length} Arbeitsnotizen zu Entra ID, Azure, Containern und Heimnetz.
+      Die meisten kommen über eine Fehlermeldung hierher — also fangen wir gleich damit an.
+    </p>
+
+    <div class="searchbox">
+      <span class="ico" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path>
+        </svg>
+      </span>
+      <input id="q" type="search" placeholder="Fehlermeldung, Produkt oder Stichwort…"
+             autocomplete="off" spellcheck="false" aria-label="Artikel durchsuchen" />
+      <span class="kbd" aria-hidden="true">⌘K</span>
+    </div>
+
+    <div class="chips">
+      {top.map(([tag, n]) => (
+        <button class="chip" type="button" data-q={tag}>{tag.toLowerCase()} <b>{n}</b></button>
+      ))}
+    </div>
+
+    <h2 class="res-head" id="res-head">Zuletzt geschrieben</h2>
+    <div class="hitlist" id="results">
+      {posts.map((p) => {
+        const f = freshness(p);
+        return (
+          <a class="hit" href={postUrl(p)}>
+            <div class="t">{p.data.title}</div>
+            <div class="m">
+              <span>{p.data.tags.slice(0, 4).join(' · ')}</span>
+              <span>{fmtDate(p.data.date)}</span>
+              <span class={f.isVerified ? 'age ok' : 'age'}>{f.label}</span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</Base>
