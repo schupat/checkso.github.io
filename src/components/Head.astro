@@ -1,0 +1,46 @@
+---
+import { SITE } from '../lib/site';
+interface Props { title: string; description?: string; canonical?: string; type?: string; date?: Date; }
+const { title, description = SITE.description, canonical = Astro.url.pathname, type = 'website', date } = Astro.props;
+const full = title === SITE.title ? title : `${title} · ${SITE.title}`;
+const url = new URL(canonical, SITE.url).href;
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{full}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={full} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:site_name" content={SITE.title} />
+<meta name="twitter:card" content="summary" />
+{date && <meta property="article:published_time" content={date.toISOString()} />}
+<link rel="icon" type="image/png" href="/assets/img/favicons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/assets/img/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png" />
+<link rel="manifest" href="/assets/img/favicons/site.webmanifest" />
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href="/feed.xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Theme vor dem ersten Paint setzen, damit es nicht kurz aufblitzt -->
+<script is:inline>
+  (function () {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'paper' && t !== 'terminal') {
+        t = matchMedia('(prefers-color-scheme: dark)').matches ? 'terminal' : 'paper';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'paper');
+    }
+  })();
+</script>
+
+{import.meta.env.PROD && SITE.umami.id && (
+  <script is:inline defer src={SITE.umami.src} data-website-id={SITE.umami.id}></script>
+)}

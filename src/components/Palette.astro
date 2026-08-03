@@ -1,0 +1,10 @@
+---
+// Befehlspalette — der Suchindex wird zur Buildzeit als /search.json erzeugt
+// und erst beim ersten Oeffnen nachgeladen.
+---
+<div class="scrim" id="scrim"></div>
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Suche und Befehle">
+  <input id="pq" type="text" placeholder="Suchen oder Befehl eingeben…" autocomplete="off" spellcheck="false" aria-label="Suchen oder Befehl eingeben" />
+  <div class="plist" id="plist" role="listbox"></div>
+  <div class="pfoot"><span>↑↓ Navigieren</span><span>⏎ Öffnen</span><span>Esc Schließen</span></div>
+</div>

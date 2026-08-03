@@ -1,43 +1,74 @@
-# Chirpy Starter
+# schuele.xyz
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Blog von Patrick Schüle — Arbeitsnotizen zu Microsoft-Infrastruktur, Entra ID, Azure,
+Containern und Heimnetz. Gebaut mit [Astro](https://astro.build), gehostet auf GitHub Pages.
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## Lokal starten
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
-
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
-
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # statisches Ergebnis in dist/
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+Node 22 oder neuer. Kein Ruby, kein Bundler, keine Submodule.
 
-## Usage
+## Einen Artikel schreiben
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+Neue Datei unter `src/content/posts/`. **Der Dateiname wird zur URL** —
+`Mein-Artikel.md` landet unter `/posts/Mein-Artikel/`. Kein Datum im Dateinamen.
 
-## Contributing
+```markdown
+---
+title: "Titel des Artikels"
+date: 2026-08-03
+categories: ["Microsoft", "Entra ID"]
+tags: ["Entra ID", "Conditional Access"]
+# Optional:
+# description: "Eigener Teaser statt des ersten Absatzes"
+# verified: 2026-08-03
+# testedAgainst: "Entra Admin Center + Graph PowerShell 2.3"
+# effort: "~20 Min"
+# draft: true
+---
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
+Text …
+```
 
-## License
+`title` und `date` sind Pflicht. Fehlt eines, **bricht der Build ab** — der Artikel
+verschwindet nicht stillschweigend, wie es bei Jekyll passieren konnte.
 
-This work is published under [MIT][mit] License.
+### Verifiziert-Siegel und Altersvermerk
 
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+Ohne `verified` zeigt ein Artikel ab 12 Monaten automatisch einen Altersvermerk.
+Setzt du `verified` auf das Datum, an dem du die Anleitung zuletzt gegen die echte
+Oberfläche geprüft hast, erscheint stattdessen ein grünes Siegel — und in der
+Trefferliste steht „geprüft MM/JJ" statt „3 J. alt". Die Schwelle steht in
+`src/lib/site.ts` unter `staleAfterMonths`.
+
+## Aufbau
+
+```
+src/content/posts/    Artikel als Markdown
+src/content.config.ts Schema — validiert das Frontmatter beim Build
+src/lib/posts.ts      Sortierung, Frische, verwandte Artikel
+src/lib/site.ts       Titel, Navigation, Umami, Schwellenwerte
+src/pages/            Routen (Startseite, Artikel, Themen, Archiv, Feed, Suchindex)
+src/styles/global.css Design-System: zwei Themes über CSS-Variablen
+src/scripts/app.ts    Theme, Suche, Befehlspalette, Kopieren-Knopf
+```
+
+## Suche
+
+`/search.json` wird zur Buildzeit erzeugt und beim ersten Tippen nachgeladen —
+kein Server, kein Fremddienst. Die Startseite listet ohne JavaScript alle Artikel;
+die Suche ist eine Verbesserung obendrauf, keine Voraussetzung.
+
+Tastatur: `⌘K` / `Strg+K` öffnet die Befehlspalette, `/` springt ins Suchfeld,
+`t` schaltet das Design um.
+
+## Deploy
+
+Push auf `main` startet `.github/workflows/pages-deploy.yml`: `npm ci`,
+`astro check`, `astro build`, Upload nach GitHub Pages. Die Domain hängt an
+`public/CNAME`.

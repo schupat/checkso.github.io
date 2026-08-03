@@ -1,0 +1,29 @@
+---
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Palette from '../components/Palette.astro';
+import { SITE } from '../lib/site';
+import '../styles/global.css';
+
+interface Props { title: string; description?: string; type?: string; date?: Date; }
+const { title, description, type, date } = Astro.props;
+---
+<!doctype html>
+<html lang={SITE.lang} data-theme="paper">
+  <head>
+    <Head title={title} description={description} type={type} date={date} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <div class="wrap">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <Palette />
+    <script>import '../scripts/app.ts';</script>
+  </body>
+</html>

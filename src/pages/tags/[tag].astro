@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import { allPosts, postUrl, fmtDate, freshness, slugify } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  const map = new Map<string, { label: string; posts: typeof posts }>();
+  for (const p of posts)
+    for (const t of p.data.tags) {
+      const k = slugify(t);
+      if (!map.has(k)) map.set(k, { label: t, posts: [] });
+      map.get(k)!.posts.push(p);
+    }
+  return [...map.entries()].map(([tag, v]) => ({
+    params: { tag }, props: { label: v.label, posts: v.posts },
+  }));
+}
+const { label, posts } = Astro.props;
+---
+<Base title={`Thema: ${label}`} description={`Alle Notizen zum Thema ${label}.`}>
+  <h1 class="page-h">{label}</h1>
+  <p class="page-sub">{posts.length} {posts.length === 1 ? 'Notiz' : 'Notizen'} zu diesem Thema.</p>
+  <div class="hitlist">
+    {posts.map((p) => {
+      const f = freshness(p);
+      return (
+        <a class="hit" href={postUrl(p)}>
+          <div class="t">{p.data.title}</div>
+          <div class="m">
+            <span>{p.data.tags.slice(0, 4).join(' · ')}</span>
+            <span>{fmtDate(p.data.date)}</span>
+            <span class={f.isVerified ? 'age ok' : 'age'}>{f.label}</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</Base>
